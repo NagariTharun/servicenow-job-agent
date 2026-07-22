@@ -2,10 +2,8 @@ name: ServiceNow Job Agent Runner
 
 on:
   schedule:
-    # Runs every day at 9:00 AM UTC
-    - cron: '30 2 * * *'
-  # Allows you to run it manually anytime from GitHub UI
-  workflow_dispatch:
+    - cron: '30 2 * * *'  # Runs automatically every day at 8:00 AM IST
+  workflow_dispatch:      # Allows you to trigger it manually anytime
 
 jobs:
   run-job-agent:
@@ -18,11 +16,15 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.10'
+          python-version: '3.11'
 
       - name: Install Dependencies
         run: |
           python -m pip install --upgrade pip
-          if [ -f requirements.txt ]; then pip install -r requirements.txt ; fi
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+
       - name: Run Job Agent Script
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
         run: python main.py
