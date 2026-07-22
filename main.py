@@ -34,5 +34,5 @@ def fetch_best_servicenow_sources():
         print(f"   Focus Area:  {item['best_for']}")
         print(f"   Direct Link: {item['url']}\n")
 
-if _name_ == "_main_":
+if _name_ == "__main__":
     fetch_best_servicenow_sources()
