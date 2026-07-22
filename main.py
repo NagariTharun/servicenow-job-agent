@@ -1,51 +1,38 @@
-import requests
-import json
+def fetch_best_servicenow_sources():
+    print("🤖 ServiceNow Developer Job Opportunities & Search Engines (1-3 YOE):\n")
+    
+    portals = [
+        {
+            "site": "Indeed India / Global",
+            "best_for": "1-3 YOE Roles, Hybrid & Remote",
+            "url": "https://in.indeed.com/q-servicenow-developer-1-year-experience-jobs.html"
+        },
+        {
+            "site": "LinkedIn Jobs",
+            "best_for": "Direct Recruiter Outreach & Global Companies",
+            "url": "https://www.linkedin.com/jobs/search/?keywords=ServiceNow%20Developer"
+        },
+        {
+            "site": "ServiceNow Careers (Direct)",
+            "best_for": "Product, AI, Platform & Associate Engineering",
+            "url": "https://careers.servicenow.com/jobs/"
+        },
+        {
+            "site": "SimplyHired",
+            "best_for": "Remote ServiceNow Developer Openings",
+            "url": "https://www.simplyhired.co.in/search?q=servicenow+developer&l=remote"
+        },
+        {
+            "site": "Remote Rocketship",
+            "best_for": "100% Remote Global/Offshore Opportunities",
+            "url": "https://www.remoterocketship.com/country/india/jobs/servicenow-developer/"
+        }
+    ]
+    
+    for idx, item in enumerate(portals, 1):
+        print(f"{idx}. {item['site']}")
+        print(f"   Focus Area:  {item['best_for']}")
+        print(f"   Direct Link: {item['url']}\n")
 
-class ServiceNowJobAgent:
-    def __init__(self, target_exp="1-3 years"):
-        self.target_exp = target_exp
-        self.keywords = ["ServiceNow Developer", "ServiceNow Engineer", "ServiceNow Consultant"]
-        
-    def fetch_jobs(self):
-        """
-        Simulates querying job aggregation APIs or career RSS feeds
-        filtered specifically for ServiceNow development roles.
-        """
-        query = f"ServiceNow Developer {self.target_exp}"
-        print(f"🤖 Searching active listings for: '{query}'...")
-        
-        # Example API Endpoint Structure (e.g., RapidAPI / Job Search APIs)
-        # url = f"https://api.jobsearch.com/v1/jobs?q={query}"
-        
-        sample_results = [
-            {
-                "title": "ServiceNow Developer (HRSD / ITSM)",
-                "experience": "1-3 Years",
-                "location": "Remote / Flexible",
-                "source": "LinkedIn Jobs",
-                "url": "https://www.linkedin.com/jobs/search/?keywords=ServiceNow%20Developer"
-            },
-            {
-                "title": "Associate ServiceNow Engineer",
-                "experience": "2 Years",
-                "location": "Bengaluru / Hybrid",
-                "source": "Indeed",
-                "url": "https://in.indeed.com/q-servicenow-developer-1-year-experience-jobs.html"
-            }
-        ]
-        return sample_results
-
-    def filter_and_format(self, jobs):
-        print(f"\n✅ Found {len(jobs)} recent job matches:\n")
-        for idx, job in enumerate(jobs, 1):
-            print(f"{idx}. {job['title']}")
-            print(f"   Experience: {job['experience']}")
-            print(f"   Location:   {job['location']}")
-            print(f"   Source:     {job['source']}")
-            print(f"   Link:       {job['url']}\n")
-
-# Run the Agent
-if __name__ == "__main__":
-    agent = ServiceNowJobAgent(target_exp="1-3 years")
-    active_jobs = agent.fetch_jobs()
-    agent.filter_and_format(active_jobs)
+if _name_ == "_main_":
+    fetch_best_servicenow_sources()
