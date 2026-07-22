@@ -1,11 +1,9 @@
-yaml
-
 name: ServiceNow Job Agent Runner
 
 on:
   schedule:
     # Runs every day at 9:00 AM UTC
-    - cron: '0 9 * * *'
+    - cron: '30 2 * * *'
   # Allows you to run it manually anytime from GitHub UI
   workflow_dispatch:
 
