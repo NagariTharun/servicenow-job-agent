@@ -32,7 +32,7 @@ def fetch_and_notify():
         "app_key": ADZUNA_APP_KEY,
         "what": "ServiceNow Developer",
         "results_per_page": 5,
-        "max_days_old": 1, 
+        "max_days_old": 1, # This ensures you ONLY get jobs posted today
         "sort_by": "date"
     }
 
