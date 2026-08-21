@@ -23,7 +23,6 @@ def send_telegram_message(message):
 def fetch_linkedin_jobs():
     print("Fetching jobs from LinkedIn...")
     jobs_list = []
-    # f_TPR=r86400 means "Only show jobs posted in the last 24 hours"
     url = "https://www.linkedin.com/jobs-guest/jobs/api/seeMoreJobPostings/search?keywords=ServiceNow+Developer&location=India&f_TPR=r86400&start=0"
     headers = {
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36"
@@ -35,7 +34,7 @@ def fetch_linkedin_jobs():
             soup = BeautifulSoup(response.text, 'html.parser')
             job_listings = soup.find_all('li')
             
-            for job in job_listings[:4]: # Grab top 4 LinkedIn jobs
+            for job in job_listings[:4]: 
                 title_elem = job.find('h3', class_='base-search-card__title')
                 if not title_elem: continue
                 
@@ -62,7 +61,7 @@ def fetch_remotive_jobs():
         response = requests.get(url)
         if response.status_code == 200:
             jobs = response.json().get("jobs", [])
-            for job in jobs[:3]: # Grab top 3 Remote jobs
+            for job in jobs[:3]:
                 title = job.get("title", "N/A")
                 company = job.get("company_name", "Unknown Company")
                 job_url = job.get("url", "#")
@@ -72,26 +71,54 @@ def fetch_remotive_jobs():
         
     return jobs_list
 
+def fetch_startup_jobs():
+    print("Fetching jobs from RemoteOK (Startups)...")
+    jobs_list = []
+    url = "https://remoteok.com/api?tag=servicenow"
+    headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"}
+    
+    try:
+        response = requests.get(url, headers=headers)
+        if response.status_code == 200:
+            data = response.json()
+            if len(data) > 1:
+                for job in data[1:4]:
+                    title = job.get("position", "N/A")
+                    company = job.get("company", "Unknown Startup")
+                    location = job.get("location", "Remote")
+                    job_url = job.get("url", "#")
+                    
+                    jobs_list.append(f"🔹 *{title}*\n🏢 {company} | 📍 {location}\n🔗 [Apply Here]({job_url})")
+    except Exception as e:
+        print(f"RemoteOK error: {e}")
+        
+    return jobs_list
+
 def fetch_and_notify():
-    # Gather jobs from both sources
     linkedin_jobs = fetch_linkedin_jobs()
     remotive_jobs = fetch_remotive_jobs()
+    startup_jobs = fetch_startup_jobs()
     
-    if not linkedin_jobs and not remotive_jobs:
-        send_telegram_message("No new ServiceNow jobs found today across LinkedIn or Remotive. Check back tomorrow! 🎯")
-        return
-
-    # Build the combined Telegram message
-    message = f"🚀 *New ServiceNow Jobs ({datetime.now().strftime('%Y-%m-%d')})* 🚀\n\n"
+    message = f"🚀 *Daily ServiceNow Job Alerts ({datetime.now().strftime('%Y-%m-%d')})* 🚀\n\n"
     
     if linkedin_jobs:
-        message += "🔷 *LINKEDIN (WFO / Hybrid / Remote)*\n"
+        message += "🔷 *LINKEDIN (WFO / Hybrid)*\n"
         message += "\n\n".join(linkedin_jobs) + "\n\n"
         
+    if startup_jobs:
+        message += "🚀 *TECH STARTUPS (RemoteOK)*\n"
+        message += "\n\n".join(startup_jobs) + "\n\n"
+
     if remotive_jobs:
         message += "🔶 *REMOTIVE (100% Remote)*\n"
         message += "\n\n".join(remotive_jobs) + "\n\n"
         
+    # Add Direct Search Links for heavily protected sites
+    message += "🌐 *QUICK SEARCH LINKS (Protected Sites)*\n"
+    message += "• [Naukri (ServiceNow - Fresh Jobs)](https://www.naukri.com/servicenow-developer-jobs?sort=date)\n"
+    message += "• [Indeed (ServiceNow - Last 24 Hrs)](https://in.indeed.com/jobs?q=servicenow+developer&fromage=1)\n"
+    message += "• [BuiltIn (ServiceNow Remote)](https://builtin.com/jobs/remote/dev-engineering?search=servicenow)\n\n"
+
     message += "Good luck with your applications today! 🎯"
         
     send_telegram_message(message)
