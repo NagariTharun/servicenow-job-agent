@@ -32,14 +32,18 @@ def fetch_and_notify():
         "app_key": ADZUNA_APP_KEY,
         "what": "ServiceNow Developer",
         "results_per_page": 5,
-        "max_days_old": 1, # This ensures you ONLY get jobs posted today
+        "max_days_old": 1,
         "sort_by": "date"
     }
 
     response = requests.get(url, params=params)
+    
+    # --- THIS IS THE PART WE CHANGED ---
     if response.status_code != 200:
-        print("Error fetching from Adzuna")
+        print(f"❌ Error fetching from Adzuna: Status {response.status_code}")
+        print(f"Details: {response.text}") # This will print the exact reason it failed!
         return
+    # -----------------------------------
         
     jobs = response.json().get("results", [])
 
